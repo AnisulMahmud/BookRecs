@@ -6,7 +6,10 @@ const BookSchema = new mongoose.Schema({
   description: { type: String },
   publishedDate: { type: Date },
   pdf: { type: String },
-  reviews: [{ type: Schema.Types.ObjectId, ref: "Review" }], // TODO: Review model
+  genres: { type: String },
+  tags: { type: [String] },
+  reviews: [{ type: mongoose.Schema.Types.ObjectId, ref: "Review" }],
+  likes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }]
 });
 
 module.exports = mongoose.model("Book", BookSchema);
