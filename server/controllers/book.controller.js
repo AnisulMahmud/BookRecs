@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const Book = require("../models/book.model");
+const { default: mongoose } = require("mongoose");
 
 const addBook = async (req, res) => {
   try {
@@ -14,11 +15,33 @@ const addBook = async (req, res) => {
 
 const getBooks = async (req, res) => {
   try {
-    const books = await Book.find().populate("reviews");
+    const books = await Book.find().populate({
+      path: "reviews",
+      populate: {
+        path: "user",
+        model: "User",
+        select: "name",
+      },
+    });
     res.status(200).json(books);
   } catch (err) {
     res.status(400).json({ error: err.message });
   }
 };
 
-module.exports = { addBook, getBooks };
+const getBooksById = async (req, res) => {
+  const { id } = req.params;
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(404).send("No book with that id");
+  }
+
+  try {
+    const book = await Book.findById(id);
+    return res.status(200).json(book);
+  } catch (error) {
+    console.log("error in getBooksById", error.message);
+    res.status(400).json({ message: "Internal Server Error" });
+  }
+};
+
+module.exports = { addBook, getBooks, getBooksById };
