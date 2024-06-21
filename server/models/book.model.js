@@ -5,6 +5,7 @@ const BookSchema = new mongoose.Schema({
   author: { type: String, required: true },
   description: { type: String },
   publishedDate: { type: Date },
+  cover: { type: String},
   pdf: { type: String },
   genres: { type: String },
   tags: { type: [String] },

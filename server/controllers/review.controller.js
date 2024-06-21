@@ -1,6 +1,7 @@
-import Review from "../models/review.model";
+const Review = require("../models/review.model");
+const Book = require("../models/book.model");
 
-const createReview = async (req, res) => {
+const createAndUpdateReview = async (req, res) => {
   try {
     const userId = req.user._id;
     const bookId = req.params.id;
@@ -14,8 +15,12 @@ const createReview = async (req, res) => {
       comment,
     });
 
-    await review.save();
-    s;
+    const savedReview = await review.save();
+
+    await Book.findByIdAndUpdate(bookId, {
+      $push: { reviews: savedReview._id },
+    });
+
     res.status(201).json({ message: "Review created successfully" });
   } catch (error) {
     console.log("error in createReview", error.message);
@@ -23,4 +28,4 @@ const createReview = async (req, res) => {
   }
 };
 
-module.exports = { createReview };
+module.exports = { createAndUpdateReview };
