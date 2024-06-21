@@ -1,9 +1,9 @@
 const bcrypt = require("bcrypt");
 const User = require("../models/user.model");
-import generateTokenAndSetCookie from "../utils/generateToken";
+const generateTokenAndSetCookie = require("../utils/generateToken");
 
 const registerUser = async (req, res) => {
-  const { name, password, email, preference } = req.body;
+  const { name, password, email, preference, roles } = req.body;
 
   try {
     if (!password) throw new Error("password is required");
@@ -19,6 +19,7 @@ const registerUser = async (req, res) => {
       password: hashedPassword,
       email,
       preference,
+      roles
     });
 
     if (newUser) {
@@ -53,8 +54,9 @@ const loginUser = async (req, res) => {
     if (!isMatchPass) res.status(400).json({ message: "invalid password" });
 
     generateTokenAndSetCookie(user._id, res);
+
     res.status(200).json({
-      _id: user._id,
+      id: user._id,
       name: user.name,
       email: user.email,
       preference: user.preference,
