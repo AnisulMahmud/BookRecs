@@ -1,5 +1,5 @@
 const bcrypt = require("bcrypt");
-const User = require("../models/user.model");
+const User = require("../models/user.model.js");
 const generateTokenAndSetCookie = require("../utils/generateToken");
 
 const registerUser = async (req, res) => {
@@ -11,15 +11,15 @@ const registerUser = async (req, res) => {
 
     const user = await User.findOne({ email });
     if (user) {
-      res.status(400).json({ message: "User already exists" });
+      return res.status(400).json({ message: "User already exists" });
     }
 
-    const newUser = await User.create({
+    const newUser = new User({
       name,
       password: hashedPassword,
       email,
       preference,
-      roles
+      roles,
     });
 
     if (newUser) {
@@ -31,6 +31,7 @@ const registerUser = async (req, res) => {
         name: newUser.name,
         email: newUser.email,
         preference: newUser.preference,
+        roles: newUser.roles,
       });
     } else {
       res.status(400).json({ message: "User not Created" });

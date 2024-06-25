@@ -2,7 +2,16 @@ const express = require("express");
 const mongoose = require("mongoose");
 require("dotenv").config();
 const cookieParser = require("cookie-parser");
+const cors = require("cors");
 const app = express();
+
+// CORS middleware configuration
+app.use(
+  cors({
+    origin: "http://localhost:5173",
+    credentials: true,
+  })
+);
 
 app.use(express.json());
 app.use(cookieParser());
